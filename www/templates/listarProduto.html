@@ -1,0 +1,23 @@
+<ion-view view-title="Lista de Produtos">
+  <ion-content>
+    <ion-list show-reorder="reordering">
+      <ion-item class="item-remove-animate item-icon-right"
+        href="#/editarproduto/{{produto.id}}"
+        ng-repeat="produto in produtos track by produto.id">
+        <h2>{{produto.nome}}</h2>
+        <p>{{produto.preco}}</p>
+        <i class="icon ion-arrow-right-b"></i>
+        <ion-reorder-button class="ion-drag"
+          on-reorder="move(produto, $fromIndex, $toIndex)"></ion-reorder-button>
+        <ion-option-button class="button-assertive icon-left ion-trash-b"
+          ng-click="remove(produto.id)">Deletar</ion-option-button>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+  <div class="bar bar-footer bar-stable">
+    <a href="#/novoproduto"
+      class="button button-assertive icon-left ion-compose">Novo Produto</a>
+    <button class="button button-light icon-left ion-shuffle"
+      ng-click="toggleReordering()">Reordenar</button>
+  </div>
+</ion-view>

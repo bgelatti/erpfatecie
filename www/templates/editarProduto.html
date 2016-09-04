@@ -1,0 +1,32 @@
+<ion-view view-title="Cadastro de Produto">
+	<ion-content>
+		<div class="list card">
+			<div class="item item-input">
+				<input type="text" placeholder="Nome"
+					ng-model="produto.nome">
+			</div>
+      <div class="item item-input">
+				<input type="text" placeholder="Codigo de Barra"
+					ng-model="produto.codigoBarra">
+          <button class="button button-block button-positive"
+            ng-click="getBarcode()">Ler Cod. Barra</button>
+			</div>
+			<div class="item item-input">
+				<textarea rows="5" placeholder="Descrição"
+					ng-model="produto.descricao"></textarea>
+			</div>
+      <div class="item item-input">
+				<input type="number" min="0.01" step="0.01" placeholder="Preço"
+					ng-model="produto.preco">
+			</div>
+      <div class="item item-input">
+				<input type="date" placeholder="Data de Cadastro"
+					ng-model="produto.dt_cadastro">
+			</div>
+		</div>
+		<div class="padding">
+			<button class="button button-block button-positive"
+				ng-click="save()">Salvar</button>
+		</div>
+	</ion-content>
+</ion-view>
