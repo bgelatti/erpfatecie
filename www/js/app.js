@@ -1,6 +1,7 @@
 (function() {
 
-var app = angular.module('erp', ['ionic', 'erp.bancoerp', 'ngCordova']);
+var app = angular.module('erp', ['ionic', 'erp.bancoerp', 'ngCordova',
+  'erp.produtoService', 'erp.baseService']);
 
 app.config(function($stateProvider, $urlRouterProvider) {
 
@@ -25,13 +26,19 @@ app.config(function($stateProvider, $urlRouterProvider) {
   $urlRouterProvider.otherwise('/listaproduto');
 });
 
-app.controller('listaProdutoControle', function($scope, Bancoerp) {
+app.controller('listaProdutoControle', function($scope, Bancoerp, produtoService) {
 
   $scope.reordering = false;
-  $scope.produtos = Bancoerp.list();
+  produtoService.getList().then(function (data) {
+      $scope.produtos = data.data.values;
+  });
 
   $scope.remove = function(produtoId) {
-    Bancoerp.remove(produtoId);
+    produtoService.deleteById(produtoId).then(function () {
+        produtoService.getList().then(function (data) {
+            $scope.produtos = data.data.values;
+        });
+    });
   };
 
   $scope.move = function(produto, fromIndex, toIndex) {
@@ -44,10 +51,10 @@ app.controller('listaProdutoControle', function($scope, Bancoerp) {
 
 });
 
-app.controller('novoProdutoControle', function($scope, $state, Bancoerp, $cordovaBarcodeScanner) {
+app.controller('novoProdutoControle', function($scope, $state, Bancoerp, $cordovaBarcodeScanner,
+  produtoService) {
 
   $scope.produto = {
-    id: new Date().getTime().toString(),
     nome: '',
     codigoBarra: '',
     descricao: '',
@@ -56,8 +63,9 @@ app.controller('novoProdutoControle', function($scope, $state, Bancoerp, $cordov
   };
 
   $scope.save = function() {
-    Bancoerp.create($scope.produto);
-    $state.go('listaproduto');
+    produtoService.save($scope.produto).then(function () {
+        $state.go('listaproduto');
+    });
   };
 
   $scope.getBarcode = function () {
@@ -69,13 +77,17 @@ app.controller('novoProdutoControle', function($scope, $state, Bancoerp, $cordov
   };
 });
 
-app.controller('editarProdutoControle', function($scope, $state, Bancoerp, $cordovaBarcodeScanner) {
+app.controller('editarProdutoControle', function($scope, $state, Bancoerp,
+  $cordovaBarcodeScanner, produtoService) {
 
-  $scope.produto = angular.copy(Bancoerp.get($state.params.produtoId));
+  produtoService.getById($state.params.produtoId).then(function (data) {
+      $scope.produto = data.data;
+  });
 
   $scope.save = function() {
-    Bancoerp.update($scope.produto);
-    $state.go('listaproduto');
+    produtoService.save($scope.produto).then(function () {
+        $state.go('listaproduto');
+    });
   };
 
   $scope.getBarcode = function () {
